@@ -29,7 +29,14 @@ var AdminSchema = new mongoose.Schema({
 var admin = mongoose.model("Admin",AdminSchema);
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost/voting");
+// mongoose.connect("mongodb://localhost/voting");
+mongoose.connect('mongodb://localhost:27017/voting', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('Connected to DB!'))
+.catch(error => console.log(error.message));
+
 app.set("view engine","ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
