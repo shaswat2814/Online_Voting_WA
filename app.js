@@ -109,7 +109,7 @@ app.get("/voterindex/:id/edit",function(req,res){
 		if(err){
 			res.redirect("/admin");
 		}else{
-			res.render("editvoter",{voter: Voters})
+			res.render("editvoter",{voter: Voters});
 		}
 	});
 });
