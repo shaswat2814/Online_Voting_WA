@@ -12,8 +12,16 @@ var methodOverride=require("method-override");
 var passportLocalMongoose = require("passport-local-mongoose");
 var User=require("./public/schema/userschema");
 var	expressSanitizer = require('express-sanitizer');
-var	cookieParser = require('cookie-parser')
+var	cookieParser = require('cookie-parser');
+var nodemailer = require('nodemailer');
 	
+var transporter = nodemailer.createTransport({
+	service: "gmail",
+	auth: {
+		user: "shaswat0233@gmail.com",
+		pass: "developer123@"
+	}
+});
 
 var AdminSchema = new mongoose.Schema({
 	cname:String,
@@ -114,16 +122,33 @@ app.get("/voterindex/:id/edit",function(req,res){
 	});
 });
 
-
+var mailOptions;
 //UPDATE ROUTE
 app.put("/voterindex/:id",function(req,res){
 	User.findByIdAndUpdate(req.params.id,req.body.voter,function(err,updatedVoter){
 		if(err){
 			res.redirect("/admin");
 		}else{
-			res.redirect("/indexvoter");
+			mailOptions = {
+				from: "shaswat0233@gamil.com",
+				to:req.body.voter.email,
+				subject: "Updated userid",
+				text: req.body.voter.username
+			};
+
+			transporter.sendMail(mailOptions,(err,info)=>{
+				if (err) {
+					console.log(err);
+				  } else {
+					console.log('Email sent: ' + info.response);
+					
+				  }
+				  res.redirect("/indexvoter");
+			});
+			
 		}
 	});
+	
 });
 
 
@@ -308,7 +333,7 @@ app.get("/logout",function(req,res){
 	res.redirect("/");
 });
 	
-app.listen(3000 || port.env.IP,function(){
+app.listen(3020 || port.env.IP,function(){
 	console.log("Server has started");
 });
 
